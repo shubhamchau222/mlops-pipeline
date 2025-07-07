@@ -113,3 +113,15 @@ dvc remote modify origin --local password <dagshub-token>
 dvc push
 git push origin main
 ```
+
+```bash
+# dvc to track the dataset
+
+dvc init
+dvc add data/train.csv
+git add data/train.csv.dvc .gitignore
+git commit -m "Track dataset with DVC"
+
+
+
+```

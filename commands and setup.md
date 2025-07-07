@@ -117,11 +117,27 @@ git push origin main
 ```bash
 # dvc to track the dataset
 
+git init
 dvc init
-dvc add data/train.csv
-git add data/train.csv.dvc .gitignore
-git commit -m "Track dataset with DVC"
+cp ../data/experimental/data.csv .
+dvc add data.csv
+git add data.csv.dvc .gitignore
+git commit -m "Initial version"
 
+# Change 1
+echo "new_value,999" >> data.csv
+dvc add data.csv && git add data.csv.dvc
+git commit -m "Added new row"
 
+# Change 2
+# (Remove row using shell commands)
+dvc add data.csv && git add data.csv.dvc
+git commit -m "Removed row"
 
+# Revert
+git checkout <initial_commit_hash>
+dvc checkout
+
+# check the commit history
+git log 
 ```

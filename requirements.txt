@@ -7,3 +7,5 @@ dagshub
 prometheus-client
 nltk
 python-dotenv
+
+-e .

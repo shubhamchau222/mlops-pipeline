@@ -13,6 +13,9 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
+import os 
+from dotenv import load_dotenv
+
 import warnings
 warnings.simplefilter("ignore", UserWarning)
 warnings.filterwarnings("ignore")
@@ -20,11 +23,21 @@ warnings.filterwarnings("ignore")
 # Suppress MLflow artifact download warnings
 # os.environ["MLFLOW_DISABLE_ARTIFACTS_DOWNLOAD"] = "1"
 
-# Set MLflow Tracking URI & DAGsHub integration
-MLFLOW_TRACKING_URI = "https://dagshub.com/vikashdas770/YT-Capstone-Project.mlflow"
-dagshub.init(repo_owner="vikashdas770", repo_name="YT-Capstone-Project", mlflow=True)
-mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+
+# ========================== SETUP MLflow & DAGSHUB ==========================
+print(os.getcwd())
+load_dotenv("./.env")
+print(os.getenv("REPO_OWNER"))
+
+mlflow.set_tracking_uri(os.getenv("MLFLOW_DAGSHUB_TRACKING_URI"))
+
+
+dagshub.init(repo_owner=os.getenv("REPO_OWNER"), 
+             repo_name=os.getenv("REPO_NAME"), 
+             mlflow=True)
+
 mlflow.set_experiment("LoR Hyperparameter Tuning")
+
 
 
 # ==========================

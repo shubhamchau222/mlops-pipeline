@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 import yaml
 import logging
 from src.logger import logging
-# from src.connections import s3_connection
+from src.s3_connections import s3_connections
 
 
 def load_params(params_path: str) -> dict:
@@ -76,7 +76,7 @@ def main():
         # test_size = 0.2
         
         df = load_data(data_url='https://raw.githubusercontent.com/shubhamchau222/mlops-pipeline/refs/heads/main/raw_data/data.csv')
-        # s3 = s3_connection.s3_operations("bucket-name", "accesskey", "secretkey")
+        # s3 = s3_connections.s3_operations("bucket-name", "accesskey", "secretkey")
         # df = s3.fetch_file_from_s3("data.csv")
 
 

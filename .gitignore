@@ -1,7 +1,8 @@
 ## My Files
 venv/*
 creds.txt
-.env 
+.env
+models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

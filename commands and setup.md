@@ -103,6 +103,7 @@ commands summary
 
 ```bash 
 dvc init
+dvc remote add -d mylocal local_s3 #optinal
 dvc add data/raw/train.csv
 git add data/raw/train.csv.dvc .gitignore
 git commit -m "Track dataset"

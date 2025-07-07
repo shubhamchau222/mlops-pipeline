@@ -7,5 +7,7 @@ dagshub
 prometheus-client
 nltk
 python-dotenv
+boto3
+SQLAlchemy
 
 -e .

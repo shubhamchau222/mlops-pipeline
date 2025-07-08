@@ -1,144 +1,196 @@
-## Commands Required for the projcet 
+# 🚀 Project Setup Guide (with UV, Git, DVC, and MLflow on DAGsHub)
 
-# UV comands
+---
+
+## 📦 Environment Setup with `uv`
+
 ```bash
-# create the env 
-uv venv --python==3.12 venv 
+# Create a virtual environment using Python 3.12
+uv venv --python=3.12 venv
 
-# Activate the env
-venv/Scripts/activate 
+# Activate the environment
+venv/Scripts/activate
 
-# to deactivate the env 
+# Deactivate the environment
 deactivate
-
 ```
 
-# create git repo 
+---
+
+## 🗃️ Git Repository Setup
 
 ```bash
-# local git initialization
-$ git init 
+# Initialize a local Git repository
+git init
 
-# to connect git remote to your local
-$ git remote add origin <your git repo link here>
+# Add remote origin
+git remote add origin <your-git-repo-url>
 
-# pull the content from git to local
-$ git pull origin main 
-
+# Pull existing content from remote
+git pull origin main
 ```
 
-# create the dagshub account and connect git repo to it
- 
+---
+
+## 🌐 Connect GitHub Repository to DAGsHub
+
+1. Go to: [https://dagshub.com/dashboard](https://dagshub.com/dashboard)
+2. Click: **Create > New Repo > Connect a repo**
+3. Choose **GitHub > Connect > Select your repo > Connect**
+4. Copy the **MLflow tracking URL** and code snippet
+5. Install dependencies:
+
+   ```bash
+   pip install dagshub mlflow
+   ```
+
+---
+
+## 🧱 (Optional) Create Project Structure with Cookiecutter
+
+🔗 Template: [cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science)
+
+```bash
+uv pip install cookiecutter
+
+cookiecutter -c v1 https://github.com/drivendata/cookiecutter-data-science
 ```
-# process 
-1. Go to: https://dagshub.com/dashboard
-2. Create > New Repo > Connect a repo > (Github) Connect > Select your repo > Connect
-3. Copy experiment tracking url and code snippet. (Also try: Go To MLFlow UI)
-4. pip install dagshub & mlflow
-```
 
-## to create project strucuture (Optional)
-link : https://github.com/drivendataorg/cookiecutter-data-science
+---
 
-```bash 
+## 📊 MLflow Setup on DAGsHub
 
-$ uv pip install cookiecutter 
+1. Setup MLflow through DAGsHub (same repo connect process as above)
+2. Use the experiment tracking snippet in your code
+3. Run experiment notebooks and track runs in the DAGsHub MLflow UI
+4. Commit and push:
 
-$ cookiecutter -c v1 https://github.com/drivendata/cookiecutter-data-science
+   ```bash
+   git add .
+   git commit -m "Add MLflow experiment"
+   git push origin main
+   ```
 
-## create the project Structures
-```
+---
 
-# Setup Mlflow on dagshub (optional you can set on aws as well)
-
--------------------------Setup MLFlow on Dagshub---------------------------
-8. Go to: https://dagshub.com/dashboard
-9. Create > New Repo > Connect a repo > (Github) Connect > Select your repo > Connect
-10. Copy experiment tracking url and code snippet. (Also try: Go To MLFlow UI)
-11. pip install dagshub & mlflow
-
-12. Run the exp notebooks
-13. git add - commit - push
-
-14. dvc init
-15. create a local folder as "local_s3" (temporary work)
-16. on terminal - "dvc remote add -d mylocal local_s3"
-
-17. Add code to below files/folders inside src dir:
-
-## doenv 
+## 📁 Example `.env` Usage (Optional)
 
 ```python
-# Environment variables go here, can be read by `python-dotenv` package:
-#
-#   `src/script.py`
-#   ----------------------------------------------------------------
-#    import dotenv
-#
-#    project_dir = os.path.join(os.path.dirname(__file__), os.pardir)
-#    dotenv_path = os.path.join(project_dir, '.env')
-#    dotenv.load_dotenv(dotenv_path)
-#   ----------------------------------------------------------------
-#
-# DO NOT ADD THIS FILE TO VERSION CONTROL!
+# Inside your script (e.g., src/script.py)
+import os
+from dotenv import load_dotenv
 
-
+dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
+load_dotenv(dotenv_path)
 ```
 
-## DVC Commands 
+> ⚠️ **Note:** Do **not** add `.env` to version control!
+
+---
+
+## 🧰 DVC Setup & Workflow Guide
+
+### ✅ 1. Initialize DVC
 
 ```bash
-
-#1) Initialize DVC (if not done already)
-
-$ dvc init
-$ git add .dvc .gitignore
-$ git commit -m "Initialize DVC"
-
-#2) Add Data to DVC
-
-$ dvc add data/raw/train.csv
-```
-commands summary
-
-```bash 
 dvc init
-dvc remote add -d mylocal local_s3 #optinal
+git add .dvc .gitignore
+git commit -m "Initialize DVC"
+```
+
+---
+
+### 📂 2. Add & Track Dataset
+
+```bash
 dvc add data/raw/train.csv
 git add data/raw/train.csv.dvc .gitignore
-git commit -m "Track dataset"
-dvc remote add -d origin https://dagshub.com/<user>/<repo>.dvc
+git commit -m "Track training dataset"
+```
+
+---
+
+### 🌐 3. Configure Remote (DAGsHub)
+
+```bash
+# Optional: local remote
+dvc remote add -d mylocal local_s3
+
+# DAGsHub remote config
+dvc remote add -d origin https://dagshub.com/<username>/<repo>.dvc
 dvc remote modify origin --local auth basic
 dvc remote modify origin --local user <dagshub-username>
 dvc remote modify origin --local password <dagshub-token>
+
+# Push tracked data and Git commits
 dvc push
 git push origin main
 ```
 
-```bash
-# dvc to track the dataset
+---
 
-git init
-dvc init
+### 🔁 4. Dataset Versioning Workflow
+
+```bash
+# Copy dataset
 cp ../data/experimental/data.csv .
+
+# Initial tracking
 dvc add data.csv
 git add data.csv.dvc .gitignore
 git commit -m "Initial version"
 
-# Change 1
+# ➕ Add new data
 echo "new_value,999" >> data.csv
-dvc add data.csv && git add data.csv.dvc
+dvc add data.csv
+git add data.csv.dvc
 git commit -m "Added new row"
 
-# Change 2
-# (Remove row using shell commands)
-dvc add data.csv && git add data.csv.dvc
+# ➖ Remove data manually, then:
+dvc add data.csv
+git add data.csv.dvc
 git commit -m "Removed row"
 
-# Revert
+# 🔄 Revert to original
 git checkout <initial_commit_hash>
 dvc checkout
 
-# check the commit history
-git log 
+# 📜 View history
+git log
 ```
+
+---
+
+### ⚙️ 5. DVC Pipelines
+
+```bash
+# Re-run DVC pipeline stages
+dvc repro
+
+# Untrack folder from Git (if tracked previously)
+git rm -r --cached 'data/raw'
+git commit -m "Stop tracking data/raw"
+```
+
+---
+
+### ☁️ 6. Connect DVC with AWS S3
+
+```bash
+# 1. Create IAM user + S3 bucket
+# 2. Install required tools
+pip install "dvc[s3]" awscli
+
+# 3. (Optional) Clear old remotes
+dvc remote list
+dvc remote remove <name>
+
+# 4. Set AWS credentials
+aws configure
+
+# 5. Add remote storage
+dvc remote add -d myremote s3://<your-bucket-name>
+```
+
+---
+

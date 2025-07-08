@@ -3,6 +3,7 @@ venv/*
 creds.txt
 .env
 models/
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

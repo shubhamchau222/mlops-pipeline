@@ -1,13 +1,14 @@
-mlflow
+mlflow==2.2.2
+dagshub
 dvc
 scikit-learn
 xgboost
 ipykernel
-dagshub
 prometheus-client
 nltk
 python-dotenv
 boto3
 SQLAlchemy
 tqdm
+
 -e .
